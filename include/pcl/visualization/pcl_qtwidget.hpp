@@ -17,8 +17,8 @@
  *       Victor Arribas Raigadas <v.arribas.urjc@gmail.com>
  */
 
-
-#pragma once
+#ifndef PCL_VISUALIZATION_PCL_QTWIDGET_H_
+#define PCL_VISUALIZATION_PCL_QTWIDGET_H_
 
 //Qt
 #include <QWidget>
@@ -36,20 +36,40 @@ class QPCLViewer : public QVTKWidget
     //Q_OBJECT
 
 public:
-    QPCLViewer(QWidget* parent = NULL, Qt::WFlags f = 0);
-    ~QPCLViewer();
+    QPCLViewer(QWidget* parent = NULL, Qt::WFlags f = 0):
+		QVTKWidget(parent, f),
+		qvtkWidget(this),
+		pclviewer(new pcl::visualization::PCLVisualizer("PCLVisualizer", false))
+	{
+		qvtkWidget->SetRenderWindow(pclviewer->getRenderWindow());
+		pclviewer->setupInteractor(qvtkWidget->GetInteractor(), qvtkWidget->GetRenderWindow());
+		pclviewer->initCameraParameters ();
+		
+		this->initUi();
+	}
+	
+    virtual ~QPCLViewer()
+	{
+		this->hide();
+		delete pclviewer;
+	}
+	
+	
+	virtual void initUi()
+	{
+		this->resize(640, 480);
+		pclviewer->setBackgroundColor(0, 0, 0);
+	}
+	
 
-    //// render cloud PointCloud. Also remove any previous cloud to avoid id collision.
-    void pushCloud(pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud);
-    void pushCloud(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr cloud);
-
+public:
     //// use explicit variable for VTK stuff (but qvtkWidget==this).
     QVTKWidget* const qvtkWidget;
 
     //// allow external access to pcl visualizer to hack it
     pcl::visualization::PCLVisualizer* const pclviewer;
 
-protected:
-    void initUi();
-
 };
+
+
+#endif

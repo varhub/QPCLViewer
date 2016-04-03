@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1997-2015 JDE Developers Team
+ *  Copyright (C) 2015 Victor Arribas <v.arribas.urjc@gmail.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
